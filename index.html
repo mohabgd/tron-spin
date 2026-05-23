@@ -3,307 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة TronSpin المتكاملة</title>
-    
-    <script src="https://cdn.jsdelivr.net/standalone/tailwind@3.4.1/tailwind.js"></script>
+    <title>TronSpin Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    
     <style>
-        body { background-color: #0b0f19; color: #e2e8f0; font-family: sans-serif; overflow-x: hidden; }
-        .main-card { background-color: #111827; border: 1px solid #1f2937; border-radius: 1rem; padding: 1.5rem; }
-        .hidden { display: none !important; }
-        .modal-bg { background-color: rgba(3, 7, 18, 0.95); backdrop-filter: blur(10px); }
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+        body { font-family: 'Tajawal', sans-serif; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="bg-[#0b0f19] text-white min-h-screen flex flex-col justify-between overflow-x-hidden">
 
-    <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-bg">
-        <div class="bg-gray-900 border border-gray-800 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4">
+    <div class="container mx-auto p-4 text-center mt-20">
+        <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500 mb-4">منصة TRONSPIN العالمية</h1>
+        <p class="text-gray-400 max-w-md mx-auto mb-8 text-sm">استمتع بالألعاب السحابية الآمنة، وتحكم بأرباحك وسحوباتك فورياً وبكل سهولة.</p>
+        
+        <button onclick="document.getElementById('authModal').classList.remove('hidden')" class="bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold px-8 py-3 rounded-xl shadow-lg shadow-yellow-500/20 hover:scale-105 transition-all">
+            دخول المنصة / لوحة التحكم
+        </button>
+    </div>
+
+    <div id="authModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-[#131a26] border border-slate-800 w-full max-w-md rounded-2xl p-6 relative shadow-2xl">
+            <button onclick="document.getElementById('authModal').classList.add('hidden')" class="absolute top-4 left-4 text-gray-500 hover:text-white text-xl">✕</button>
             
-            <div class="grid grid-cols-2 gap-2 bg-gray-950 p-1 rounded-xl border border-gray-800 text-xs font-bold">
-                <button onclick="toggleAuthMode('login')" id="btnAuthLogin" class="py-2.5 rounded-lg bg-blue-600 text-white">تسجيل الدخول</button>
-                <button onclick="toggleAuthMode('signup')" id="btnAuthSignup" class="py-2.5 rounded-lg text-gray-400">إنشاء حساب جديد</button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span class="text-amber-500 text-2xl">🔐</span>
+                </div>
+                <h3 class="text-lg font-bold">بوابة الدخول الموحدة</h3>
+                <p class="text-xs text-gray-500 mt-1">سجل دخولك عبر خوادم الأمان لتفعيل حسابك</p>
             </div>
 
-            <button onclick="loginWithGoogle()" class="w-full py-3 bg-white hover:bg-gray-100 text-gray-900 font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer">
-                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/web-24dp/v6_web-24dp.png" class="w-4 h-4" alt="Google">
-                الدخول السريع بحساب Google
+            <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-900 font-bold py-3 px-4 rounded-xl transition-all shadow-md mb-4">
+                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.113-5.136 4.113-3.41 0-6.166-2.756-6.166-6.166s2.756-6.166 6.166-6.166c1.551 0 2.964.574 4.054 1.514l3.11-3.11C19.254 2.164 15.96 1 12.24 1 5.48 1 0 6.48 0 13.24s5.48 12.24 12.24 12.24c6.76 0 11.76-4.76 11.76-11.76 0-.783-.07-1.537-.2-2.26H12.24z"/>
+                </svg>
+                تسجيل الدخول بواسطة Google
             </button>
 
-            <div class="flex items-center my-2 text-gray-600 text-[10px] uppercase font-boldbefore:flex-1 before:border-t before:border-gray-800 before:me-3 after:flex-1 after:border-t after:border-gray-800 after:ms-3">أو الطريقة العادية</div>
-
-            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3">
-                <div id="usernameField" class="hidden space-y-1">
-                    <label class="text-[11px] text-gray-400">اسم المستخدم</label>
-                    <input id="authUsername" type="text" placeholder="مثال: mahrouz75" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-blue-500">
-                </div>
-
-                <div class="space-y-1">
-                    <label id="emailPhoneLabel" class="text-[11px] text-gray-400">البريد الإلكتروني أو رقم الهاتف</label>
-                    <input id="authEmailPhone" type="text" placeholder="username@gmail.com أو +213xxxxxxxxx" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-blue-500" required>
-                </div>
-
-                <div class="space-y-1">
-                    <label class="text-[11px] text-gray-400">كلمة المرور</label>
-                    <input id="authPassword" type="password" placeholder="••••••••" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-blue-500" required>
-                </div>
-
-                <div id="confirmPasswordField" class="hidden space-y-1">
-                    <label class="text-[11px] text-gray-400">تأكيد كلمة المرور</label>
-                    <input id="authConfirmPassword" type="password" placeholder="••••••••" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-blue-500">
-                </div>
-
-                <button type="submit" id="authSubmitBtn" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-lg transition cursor-pointer">دخول للمنصة</button>
-            </form>
-            <p id="authModalStatus" class="text-[11px] text-center h-3 font-semibold"></p>
+            <div id="authModalStatus" class="text-xs text-center text-gray-400 min-h-[18px]">جاهز للاتصال...</div>
         </div>
     </div>
 
-    <header class="bg-gray-900 border-b border-gray-800 p-4 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center gap-3">
-            <button id="toggleSidebar" class="text-xl p-2 hover:bg-gray-800 rounded-lg text-blue-400 cursor-pointer">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h1 class="text-xl font-bold text-blue-400">Tron<span class="text-slate-100">Spin</span></h1>
-        </div>
-        
-        <div class="flex items-center gap-3">
-            <div class="bg-gray-950 px-4 py-2 rounded-full border border-gray-800 flex items-center gap-2 font-mono text-sm">
-                <i class="fas fa-coins text-amber-500"></i>
-                <span id="userBalance" class="text-emerald-400 font-bold">100.0000</span>
-                <span class="text-gray-400 text-xs">TRX</span>
-            </div>
-            <button onclick="logoutSession()" class="text-gray-400 hover:text-rose-400 p-2 text-sm cursor-pointer"><i class="fas fa-sign-out-alt"></i></button>
-        </div>
-    </header>
-
-    <div class="flex flex-1 relative">
-        
-        <aside id="sidebar" class="w-64 bg-gray-900 p-4 flex flex-col gap-2 fixed right-0 top-[73px] bottom-0 transition-transform duration-300 z-40 shadow-2xl border-l border-gray-800">
-            
-            <div class="flex items-center gap-3 p-3 bg-gray-950 rounded-xl border border-gray-800 mb-2">
-                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold" id="userAvatarIcon">U</div>
-                <div>
-                    <p class="text-sm font-semibold truncate max-w-[120px]" id="sidebarUsername">جاري التحميل...</p>
-                    <span id="userRoleBadge" class="text-xs text-amber-500 font-mono"><i class="fas fa-medal"></i> لاعب برونزي</span>
-                </div>
-            </div>
-
-            <div class="bg-gray-950 p-3 rounded-xl border border-dashed border-amber-500/40 my-2 space-y-2">
-                <p class="text-[11px] text-amber-400 font-bold text-center"><i class="fas fa-ticket-alt"></i> تفعيل قسائم الأرصدة</p>
-                <input type="text" id="promoCodeInput" placeholder="أدخل كود القسيمة هنا" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-[11px] text-center font-mono focus:outline-none focus:border-amber-500 text-amber-300">
-                <button onclick="claimPromoCode()" class="w-full py-2 bg-amber-500 text-gray-950 text-[11px] font-black rounded-lg transition cursor-pointer">تفعيل الرصيد المجاني 🎁</button>
-                <p id="promoStatus" class="text-[10px] text-center h-3 font-semibold"></p>
-            </div>
-
-            <hr class="border-gray-800 my-1">
-
-            <nav class="flex flex-col gap-1">
-                <button onclick="switchTab('games', this)" class="tab-btn flex items-center gap-3 p-3 w-full text-right rounded-xl font-medium text-blue-400 bg-gray-800 cursor-pointer"><i class="fas fa-gamepad w-5"></i> صالة الألعاب</button>
-                <button onclick="switchTab('earn', this)" class="tab-btn flex items-center gap-3 p-3 w-full text-right rounded-xl font-medium text-gray-400 hover:bg-gray-800/50 cursor-pointer"><i class="fas fa-eye w-5"></i> شاهد واربح (إعلانات)</button>
-                <button onclick="switchTab('wallet', this)" class="tab-btn flex items-center gap-3 p-3 w-full text-right rounded-xl font-medium text-gray-400 hover:bg-gray-800/50 cursor-pointer"><i class="fas fa-wallet w-5"></i> الإيداع والسحب</button>
-                <button onclick="switchTab('leaderboard', this)" class="tab-btn flex items-center gap-3 p-3 w-full text-right rounded-xl font-medium text-gray-400 hover:bg-gray-800/50 cursor-pointer"><i class="fas fa-trophy w-5"></i> دوري المتصدرين</button>
-                <button onclick="switchTab('support', this)" class="tab-btn flex items-center gap-3 p-3 w-full text-right rounded-xl font-medium text-gray-400 hover:bg-gray-800/50 cursor-pointer"><i class="fas fa-headset w-5"></i> الدعم الفني</button>
-                
-                <button id="adminTabBtn" onclick="switchTab('admin', this)" class="tab-btn hidden items-center gap-3 p-3 w-full text-right rounded-xl font-bold text-rose-400 bg-rose-950/20 border border-rose-900/40 cursor-pointer"><i class="fas fa-user-shield w-5"></i> لوحة تحكم الإدارة</button>
-            </nav>
-        </aside>
-
-        <div id="banScreen" class="hidden fixed inset-0 bg-black/95 backdrop-blur-md flex flex-col justify-center items-center z-50 p-6 text-center space-y-4">
-            <div class="text-6xl text-rose-500"><i class="fas fa-user-slash animate-pulse"></i></div>
-            <h1 class="text-2xl font-black text-rose-500">تم حظر حسابك بالكامل!</h1>
-            <p class="text-sm text-gray-400 max-w-sm">بسبب انتهاك القواعد، تم تجميد أنشطتك وأرصدتك بقرار إداري صارم.</p>
-        </div>
-
-        <main class="flex-1 p-4 md:p-8 flex flex-col items-center w-full overflow-y-auto max-h-[calc(100vh-80px)] transition-all duration-300" id="mainContent">
-            
-            <div id="tab-games" class="main-tab w-full max-w-xl space-y-6">
-                <div class="flex gap-2 justify-center bg-gray-950 p-2 rounded-xl border border-gray-800 overflow-x-auto">
-                    <button onclick="switchGame('dice', this)" class="game-nav-btn px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white">Dice</button>
-                    <button onclick="switchGame('mines', this)" class="game-nav-btn px-4 py-2 text-xs font-bold rounded-lg text-gray-400 hover:bg-gray-900">Mines</button>
-                    <button onclick="switchGame('slots', this)" class="game-nav-btn px-4 py-2 text-xs font-bold rounded-lg text-gray-400 hover:bg-gray-900">Slots</button>
-                    <button onclick="switchGame('gems', this)" class="game-nav-btn px-4 py-2 text-xs font-bold rounded-lg text-gray-400 hover:bg-gray-900">Gems</button>
-                    <button onclick="switchGame('crash', this)" class="game-nav-btn px-4 py-2 text-xs font-bold rounded-lg text-gray-400 hover:bg-gray-900">Crash (الطائرة)</button>
-                </div>
-
-                <div id="game-dice" class="game-section bg-gray-900 main-card rounded-2xl border border-gray-800 p-6 shadow-2xl">
-                    <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-blue-400"><i class="fas fa-dice"></i> لعبة النرد (Dice)</h3></div>
-                    <div class="space-y-4">
-                        <input id="betAmountDice" type="number" value="1.00" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 font-mono text-emerald-400 focus:outline-none">
-                        <div class="bg-gray-950 p-6 rounded-xl border border-gray-800 text-center text-5xl font-black text-slate-500 font-mono" id="diceResult">🎲</div>
-                        <p id="diceStatus" class="text-sm font-semibold text-center h-5"></p>
-                        <button id="rollDiceBtn" class="w-full py-3.5 bg-blue-600 text-white font-bold rounded-xl shadow-lg cursor-pointer">رمي النرد</button>
-                    </div>
-                </div>
-
-                <div id="game-mines" class="game-section hidden bg-gray-900 main-card rounded-2xl border border-gray-800 p-6 shadow-2xl">
-                    <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-rose-500"><i class="fas fa-bomb"></i> حقل الألغام (Mines)</h3></div>
-                    <div class="space-y-4">
-                        <input id="betAmountMines" type="number" value="1.00" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 font-mono text-emerald-400 focus:outline-none">
-                        <div class="grid grid-cols-3 gap-3 max-w-[220px] mx-auto my-4" id="minesGrid"></div>
-                        <div class="flex gap-2">
-                            <button id="startMinesBtn" class="flex-1 py-3 bg-emerald-600 text-white font-bold rounded-xl cursor-pointer">بدء اللعب</button>
-                            <button id="cashoutMinesBtn" class="flex-1 py-3 bg-amber-500 text-gray-950 font-black rounded-xl cursor-pointer hidden">انسحب</button>
-                        </div>
-                        <p id="minesStatus" class="text-sm font-semibold text-center h-5"></p>
-                    </div>
-                </div>
-
-                <div id="game-slots" class="game-section hidden bg-gray-900 main-card rounded-2xl border border-gray-800 p-6 shadow-2xl">
-                    <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-amber-500"><i class="fas fa-bolt"></i> ماكينة الحظ (Slots)</h3></div>
-                    <div class="space-y-4">
-                        <input id="betAmountSlots" type="number" value="1.00" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 font-mono text-emerald-400 focus:outline-none">
-                        <div class="flex justify-center gap-4 bg-gray-950 p-6 rounded-xl border border-gray-800 text-4xl font-mono tracking-widest">
-                            <div id="slot1" class="bg-gray-900 p-3 rounded-lg border border-gray-800">🍒</div>
-                            <div id="slot2" class="bg-gray-900 p-3 rounded-lg border border-gray-800">🍋</div>
-                            <div id="slot3" class="bg-gray-900 p-3 rounded-lg border border-gray-800">🍇</div>
-                        </div>
-                        <p id="slotsStatus" class="text-sm font-semibold text-center h-5"></p>
-                        <button id="spinSlotsBtn" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 text-gray-950 font-black rounded-xl shadow-lg cursor-pointer">تدوير (Spin)</button>
-                    </div>
-                </div>
-
-                <div id="game-gems" class="game-section hidden bg-gray-900 main-card rounded-2xl border border-gray-800 p-6 shadow-2xl">
-                    <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-teal-400"><i class="fas fa-gem"></i> مطابقة الجواهر (Gems)</h3></div>
-                    <div class="space-y-4">
-                        <input id="betAmountGems" type="number" value="1.00" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 font-mono text-emerald-400 focus:outline-none">
-                        <div class="grid grid-cols-3 gap-2 bg-gray-950 p-4 rounded-xl border border-gray-800" id="gemsContainer"></div>
-                        <p id="gemsStatus" class="text-sm font-semibold text-center h-5"></p>
-                        <button id="playGemsBtn" class="w-full py-3.5 bg-teal-600 text-white font-bold rounded-xl cursor-pointer">فتح الصناديق</button>
-                    </div>
-                </div>
-
-                <div id="game-crash" class="game-section hidden bg-gray-900 main-card rounded-2xl border border-gray-800 p-6 shadow-2xl">
-                    <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-indigo-400"><i class="fas fa-plane-departure"></i> لعبة الطائرة والمضاعف (Crash 1x - 20x)</h3></div>
-                    <div class="space-y-4">
-                        <input id="betAmountCrash" type="number" value="1.00" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 font-mono text-emerald-400 focus:outline-none">
-                        <div class="bg-gray-950 p-8 rounded-xl border border-gray-800 text-center relative overflow-hidden h-40 flex flex-col justify-center items-center">
-                            <div id="crashPlaneLine" class="absolute bottom-4 left-4 text-4xl text-indigo-400 transition-all duration-100"><i class="fas fa-plane"></i></div>
-                            <div id="crashMultiplierDisplay" class="text-5xl font-black text-gray-400 font-mono z-10">1.00x</div>
-                            <p id="crashStatus" class="text-xs font-semibold mt-2 h-4 z-10 text-gray-400"></p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button id="startCrashBtn" class="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-xl shadow-lg cursor-pointer">إقلاع الطائرة 🛫</button>
-                            <button id="cashoutCrashBtn" class="w-full py-3.5 bg-amber-500 text-gray-950 font-black rounded-xl shadow-lg cursor-pointer hidden">كاش أوت 💰</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-earn" class="main-tab hidden w-full max-w-xl bg-gray-900 main-card rounded-2xl border border-gray-800 p-6 shadow-2xl my-auto">
-                <h2 class="text-lg font-bold mb-2 text-slate-100 flex items-center gap-2"><i class="fas fa-video text-purple-400"></i> قسم شاهد الإعلانات واربح TRX</h2>
-                <div class="bg-gray-950 p-6 rounded-xl border border-gray-800 text-center space-y-4">
-                    <div class="text-3xl text-purple-400"><i class="fas fa-tv animate-pulse"></i></div>
-                    <p class="text-xs text-emerald-400 mt-1">المكافأة: +0.2500 TRX</p>
-                    <button onclick="openNewAdNetwork()" class="w-full text-center px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl cursor-pointer transition transform active:scale-95">تشغيل ومكافأة المشاهدة 📺</button>
-                </div>
-                <p id="earnStatus" class="text-sm font-semibold text-center h-5 mt-4 text-emerald-400"></p>
-            </div>
-
-            <div id="tab-wallet" class="main-tab hidden w-full max-w-xl bg-gray-900 main-card rounded-2xl border border-gray-800 p-6 shadow-2xl my-auto">
-                <h2 class="text-lg font-bold mb-6 text-slate-100 flex items-center gap-2"><i class="fas fa-wallet text-emerald-400"></i> إدارة الرصيد والمحفظة المالية</h2>
-                <div class="grid grid-cols-2 gap-2 bg-gray-950 p-1.5 rounded-xl border border-gray-800 mb-6">
-                    <button onclick="toggleWalletAction('deposit')" id="btn-tab-deposit" class="py-2 text-xs font-bold rounded-lg bg-gray-800 text-emerald-400">شحن الرصيد / الإيداع</button>
-                    <button onclick="toggleWalletAction('withdraw')" id="btn-tab-withdraw" class="py-2 text-xs font-bold rounded-lg text-gray-400">سحب الأرباح</button>
-                </div>
-                
-                <div id="wallet-deposit" class="space-y-4">
-                    <p class="text-xs text-gray-400 text-center">أرسل عملات TRX مباشرة لعنوان إدارة المسؤول بالأسفل:</p>
-                    <div class="bg-gray-950 p-3 rounded-xl border border-gray-800 flex justify-between items-center font-mono text-xs text-amber-400 font-bold">
-                        <span id="depositWallet">جاري جلب محفظتك الشخصية...</span>
-                        <button onclick="copyWallet()" class="p-2 bg-gray-800 text-blue-400 rounded-lg cursor-pointer"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 text-center text-[11px] font-mono p-2 bg-gray-950 rounded-xl border border-gray-800">
-                        <div class="text-rose-400 border-l border-gray-800">الحد الأدنى: <span id="minDepositLabel">0</span> TRX</div>
-                        <div class="text-emerald-400">الحد الأقصى: <span id="maxDepositLabel">0</span> TRX</div>
-                    </div>
-                    <div class="space-y-2 border-t border-gray-800 pt-3">
-                        <input id="simulateDepositInput" type="number" placeholder="أدخل القيمة المشحونة لتأكيد الإرسال" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs focus:outline-none text-slate-200">
-                        <button onclick="simulateDeposit()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-gray-950 font-black rounded-xl text-xs cursor-pointer">تأكيد إرسال الشحنة 📥</button>
-                    </div>
-                    <p id="depositStatus" class="text-xs text-center h-3 font-semibold"></p>
-                </div>
-                
-                <div id="wallet-withdraw" class="space-y-4 hidden">
-                    <input type="text" placeholder="أدخل عنوان محفظة TRX (TRC-20)" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs focus:outline-none text-slate-200">
-                    <input id="withdrawAmount" type="number" placeholder="المبلغ المراد سحبه" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs focus:outline-none text-slate-200">
-                    <button onclick="processWithdrawal()" class="w-full py-3.5 bg-emerald-600 text-white font-bold rounded-xl">تقديم طلب السحب 📤</button>
-                    <p id="walletStatus" class="text-sm font-semibold text-center h-5 text-rose-500"></p>
-                </div>
-            </div>
-
-            <div id="tab-leaderboard" class="main-tab hidden w-full max-w-xl bg-gray-900 main-card rounded-2xl border border-gray-800 p-6 shadow-2xl my-auto">
-                <h2 class="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2"><i class="fas fa-trophy text-amber-400"></i> دوري متصدري رابحي المنصة</h2>
-                <div class="bg-gray-950 rounded-xl border border-gray-800 overflow-hidden text-xs">
-                    <div class="grid grid-cols-4 p-3 bg-gray-900 border-b border-gray-800 font-bold text-gray-400">
-                        <span>الترتيب</span><span>اسم المستخدم</span><span>المرتبة</span><span>مجموع الأرباح</span>
-                    </div>
-                    <div class="divide-y divide-gray-800/40 font-mono">
-                        <div class="grid grid-cols-4 p-3 items-center text-amber-400 font-bold"><span>🥇 #1</span><span>Fares_Dz</span><span class="text-amber-500">الماسية</span><span>4,850 TRX</span></div>
-                        <div class="grid grid-cols-4 p-3 items-center text-slate-300 font-bold"><span>🥈 #2</span><span>Kamilia99</span><span class="text-gray-400">بلاتينية</span><span>2,910 TRX</span></div>
-                        <div class="grid grid-cols-4 p-3 items-center text-amber-600 font-bold"><span>🥉 #3</span><span>Said_Tiaret</span><span class="text-amber-600">ذهبية</span><span>1,420 TRX</span></div>
-                        <div class="grid grid-cols-4 p-3 items-center text-slate-400"><span>#4</span><span id="leaderboardSessionUser">mahrouz</span><span class="text-amber-600">برونزي</span><span id="leaderboardUserWinnings">100 TRX</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-support" class="main-tab hidden w-full max-w-xl bg-gray-900 main-card rounded-2xl border border-gray-800 p-6 shadow-2xl my-auto">
-                <h2 class="text-lg font-bold mb-4 text-slate-100 flex items-center gap-2"><i class="fas fa-headset text-blue-400"></i> مركز دعم الاستفسارات وحل المشاكل</h2>
-                <div class="space-y-4">
-                    <textarea id="supportMsg" rows="4" placeholder="اكتب رسالتك هنا..." class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none"></textarea>
-                    <button onclick="submitTicket()" class="w-full py-3.5 bg-blue-600 text-white font-bold rounded-xl">إرسال التذكرة للفحص اليدوي 🛠️</button>
-                    <p id="supportStatus" class="text-sm font-semibold text-center h-5 text-emerald-400"></p>
-                </div>
-            </div>
-
-            <div id="tab-admin" class="main-tab hidden w-full max-w-xl bg-gray-900 main-card rounded-2xl border border-rose-900/60 p-6 shadow-2xl space-y-6">
-                <div class="flex justify-between items-center border-b border-gray-800 pb-3">
-                    <h2 class="text-md font-black text-rose-400 flex items-center gap-2"><i class="fas fa-user-shield"></i> لوحة الإدارة الفائقة لحساب Google المسؤول</h2>
-                    <span class="text-[10px] bg-rose-950 border border-rose-700 px-2 py-0.5 rounded text-rose-300 font-mono font-bold">PRO ACCOUNT</span>
-                </div>
-                
-                <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 space-y-3">
-                    <h3 class="text-xs font-bold text-slate-300"><i class="fas fa-wallet text-amber-500"></i> إعدادات شحن محفظتك الرسمية</h3>
-                    <div class="space-y-2">
-                        <label class="block text-[11px] text-gray-400">عنوان محفظتك الخاصة (TRX / TRC-20)</label>
-                        <input id="adminWalletInput" type="text" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs font-mono text-amber-300">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[11px] text-gray-400">الحد الأدنى للإيداع</label>
-                            <input id="adminMinDepInput" type="number" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs font-mono text-rose-400">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] text-gray-400">الحد الأقصى للإيداع</label>
-                            <input id="adminMaxDepInput" type="number" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs font-mono text-emerald-400">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xs font-bold text-slate-300"><i class="fas fa-sliders-h text-blue-500"></i> خوارزمية التحكم في نسبة ربح المنصة</h3>
-                        <span id="currentRateLabel" class="text-xs text-blue-400 font-mono font-bold">50%</span>
-                    </div>
-                    <input id="adminWinRateSlider" type="range" min="10" max="90" step="5" class="w-full accent-rose-600 cursor-pointer">
-                    <div class="flex justify-between text-[10px] text-gray-500 font-mono"><span>10% (ربح دائم للاعب)</span><span>90% (خسارة مستمرة ومضمونة)</span></div>
-                </div>
-
-                <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 space-y-3">
-                    <h3 class="text-xs font-bold text-slate-300"><i class="fas fa-ban text-rose-500"></i> نظام حظر الحسابات الفرعي</h3>
-                    <div class="flex gap-2">
-                        <button onclick="setAccountBanStatus(true)" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg cursor-pointer">تفعيل الحظر الكلي 🚫</button>
-                        <button onclick="setAccountBanStatus(false)" class="flex-1 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-bold rounded-lg cursor-pointer">إلغاء الحظر وتفعيل اللعب</button>
-                    </div>
-                </div>
-
-                <button onclick="saveAdminSettings()" class="w-full py-3 bg-rose-600 text-white text-xs font-black rounded-xl cursor-pointer">حفظ وتطبيق إعدادات الآدمن الفائقة 🔐</button>
-            </div>
-
-        </main>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="app.js"></script>
 </body>
